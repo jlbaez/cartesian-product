@@ -1,0 +1,194 @@
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.stream.Collectors;
+
+/**
+ * Cartesian
+ * Created by jose on 4/14/16.
+ * Last edited on 4/14/16
+ */
+class CartesianProduct
+{
+    String getProduct(String input)
+    {
+        String[] inputArray = splitByFirstArray(input);
+        String firstInput = inputArray[0];
+        String secondInput = "";
+        String thirdInput = "";
+
+        if(inputArray.length > 1)
+            secondInput = inputArray[1];
+        if(inputArray.length > 2)
+            thirdInput = inputArray[2];
+
+        ArrayList<String> list = getProduct(firstInput, secondInput, thirdInput, new ArrayList<>());
+
+        return listToString(list);
+    }
+
+    private ArrayList<String> getProduct(String input1, String input2, String input3, ArrayList<String> finalProductList)
+    {
+        if(input2.equals("") && input3.equals(""))
+        {
+            String[] array = input1.split(",");
+            Collections.addAll(finalProductList, array);
+
+            return finalProductList;
+        }
+
+        ArrayList<String> list = new ArrayList<>();
+        if(input2.contains("{"))
+        {
+            String[] inputArray = splitByFirstArray(input2);
+            String[] input1Array = input1.split(",");
+            String firstInput = inputArray[0];
+            String secondInput = "";
+            String thirdInput = "";
+
+            if(inputArray.length > 1)
+                secondInput = inputArray[1];
+            if(inputArray.length > 2)
+                thirdInput = inputArray[2];
+
+            list.addAll(getProduct(firstInput, secondInput, thirdInput, new ArrayList<>()));
+
+            if(input1Array.length == 1)
+                for(int i=0; i<list.size(); i++)
+                    list.set(i, input1Array[0] + list.get(i));
+        }
+        else
+        {
+            String[] input1Array = input1.split(",");
+            String[] input2Array = input2.split(",");
+            if (input1Array.length == 0)
+            {
+                for (String entry : input2Array)
+                {
+                    list.add(input1 + entry);
+                }
+            }
+            else
+            {
+                int i = 0;
+                while (i < input1Array.length - 1)
+                {
+                    finalProductList.add(input1Array[i]);
+                    i++;
+                }
+
+                for (String entry : input2Array)
+                {
+                    list.add(input1Array[input1Array.length - 1] + entry);
+                }
+            }
+        }
+
+        if(!input3.equals(""))
+        {
+            if(input3.contains("{"))
+            {
+                String[] inputArray = splitByFirstArray(input3);
+                String firstInput = inputArray[0];
+                String secondInput = "";
+                String thirdInput = "";
+
+                if(inputArray.length > 1)
+                    secondInput = inputArray[1];
+                if(inputArray.length > 2)
+                    thirdInput = inputArray[2];
+
+                ArrayList<String> list2 = getProduct(firstInput, secondInput, thirdInput, new ArrayList<>());
+
+                for(String input3Entry: list2)
+                {
+                    for(String input2Entry : list)
+                    {
+                        finalProductList.add(input2Entry + input3Entry);
+                    }
+                }
+            }
+            else
+            {
+                String[] input3Array = input3.split(",");
+
+                finalProductList.addAll(list.stream().map(aList -> aList + input3Array[0]).collect(Collectors.toList()));
+
+                if(input3Array.length > 1)
+                {
+                    finalProductList.addAll(Arrays.asList(input3Array).subList(1, input3Array.length));
+                }
+            }
+        }
+        else
+        {
+            finalProductList.addAll(list);
+        }
+
+        return finalProductList;
+    }
+
+    private String[] splitByFirstArray(String string)
+    {
+        if(string.contains("{"))
+        {
+            int firstSplit = 0, secondSplit = string.length(), bracketsFound = 0;
+            boolean firstSplitFound = false;
+
+            for(int i=0; i<string.length(); i++)
+            {
+                if(string.charAt(i) == '{')
+                    if (!firstSplitFound) {
+                        firstSplit = i;
+                        firstSplitFound = true;
+                    } else {
+                        bracketsFound++;
+                    }
+
+                if(string.charAt(i) == '}')
+                {
+                    if(bracketsFound ==0)
+                    {
+                        secondSplit = i;
+                        break;
+                    }
+                    else
+                    {
+                        bracketsFound--;
+                    }
+                }
+            }
+
+            String firstStringSplit = string.substring(0, firstSplit);
+            ArrayList<String> list = new ArrayList<>();
+            if(!firstStringSplit.equals(""))
+                list.add(firstStringSplit);
+            list.add(string.substring(firstSplit + 1, secondSplit));
+            if(secondSplit +1 < string.length())
+            {
+                String lastSplit = string.substring(secondSplit + 1, string.length());
+                if(!lastSplit.equals(""))
+                    list.add(lastSplit);
+            }
+
+            return list.toArray(new String[list.size()]);
+        }
+
+        return new String[]{string};
+    }
+
+    private String listToString(ArrayList<String> stringList) {
+        String output = "";
+
+        if(stringList.size() > 0)
+        {
+            for (String listEntry : stringList)
+            {
+                output += listEntry + " ";
+            }
+            output = output.substring(0, output.length() - 1);
+        }
+
+        return output;
+    }
+}
