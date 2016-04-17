@@ -42,20 +42,16 @@ class CartesianProduct
         return listToString(list);
     }
 
-    private boolean bracketsBalanced(String input){
-        int i=0;
-        for(char c : input.toCharArray())
-        {
-            if(c == '{')
+    private boolean bracketsBalanced(String input) {
+        int i = 0;
+        for (char c : input.toCharArray()) {
+            if (c == '{')
                 i++;
-            if(c == '}')
+            if (c == '}')
                 i--;
-
-            if(i < 0)
-                return false;
         }
 
-        return i == 0;
+        return i >= 0 && i == 0;
     }
 
     private ArrayList<String> getProduct(String input1, String input2, String input3, ArrayList<String> finalProductList)
