@@ -10,8 +10,23 @@ import java.util.stream.Collectors;
  */
 class CartesianProduct
 {
-    String getProduct(String input)
+    public static void main(String[] args)
     {
+        CartesianProduct c = new CartesianProduct();
+        try
+        {
+            if(args.length > 0)
+                System.out.println(c.getProduct(args[0]));
+        }
+        catch (UnclosedBracket e)
+        {
+            e.printStackTrace();
+        }
+    }
+    String getProduct(String input) throws UnclosedBracket
+    {
+        if(!bracketsBalanced(input))
+            throw new UnclosedBracket("Brackets not balanced: " + input);
         String[] inputArray = splitByFirstArray(input);
         String firstInput = inputArray[0];
         String secondInput = "";
@@ -25,6 +40,19 @@ class CartesianProduct
         ArrayList<String> list = getProduct(firstInput, secondInput, thirdInput, new ArrayList<>());
 
         return listToString(list);
+    }
+
+    private boolean bracketsBalanced(String input){
+        int i=0;
+        for(char c : input.toCharArray())
+        {
+            if(c == '{')
+                i++;
+            if(c == '}')
+                i--;
+        }
+
+        return i == 0;
     }
 
     private ArrayList<String> getProduct(String input1, String input2, String input3, ArrayList<String> finalProductList)
@@ -102,10 +130,7 @@ class CartesianProduct
 
                 for(String input3Entry: list2)
                 {
-                    for(String input2Entry : list)
-                    {
-                        finalProductList.add(input2Entry + input3Entry);
-                    }
+                    finalProductList.addAll(list.stream().map(input2Entry -> input2Entry + input3Entry).collect(Collectors.toList()));
                 }
             }
             else
