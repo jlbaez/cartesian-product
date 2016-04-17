@@ -50,6 +50,9 @@ class CartesianProduct
                 i++;
             if(c == '}')
                 i--;
+
+            if(i < 0)
+                return false;
         }
 
         return i == 0;
