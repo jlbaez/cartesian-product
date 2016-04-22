@@ -23,6 +23,7 @@ class CartesianProduct
             e.printStackTrace();
         }
     }
+
     String getProduct(String input) throws UnclosedBracket
     {
         if(!bracketsBalanced(input))
@@ -42,6 +43,7 @@ class CartesianProduct
         return listToString(list);
     }
 
+    //checks if its has closed arrays in input string
     private boolean bracketsBalanced(String input) {
         int i = 0;
         for (char c : input.toCharArray()) {
@@ -57,6 +59,11 @@ class CartesianProduct
         return i == 0;
     }
 
+    //recursive function that takes in the the string split into 3 parts
+    //input1 is what is immediately after the current array
+    //input2 is what is inside of the array
+    //input3 is what is immediately after the array
+    //final productlist is the returned as output and contains the calculated products
     private ArrayList<String> getProduct(String input1, String input2, String input3, ArrayList<String> finalProductList)
     {
         if(input2.equals("") && input3.equals(""))
@@ -155,6 +162,8 @@ class CartesianProduct
         return finalProductList;
     }
 
+    //splits a given string into the 3 parts based on current, whats before the array, whats in the array, and whats after the array
+    //current array being the left most array
     private String[] splitByFirstArray(String string)
     {
         if(string.contains("{"))
@@ -204,6 +213,7 @@ class CartesianProduct
         return new String[]{string};
     }
 
+    //converts array list to string
     private String listToString(ArrayList<String> stringList) {
         String output = "";
 
